@@ -1,0 +1,122 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "title": "AI chatbot with Go",
+        "contact": {},
+        "version": "1.0"
+    },
+    "paths": {
+        "/chat": {
+            "post": {
+                "description": "Get a response to a question",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "chat"
+                ],
+                "summary": "Chat with a bot",
+                "parameters": [
+                    {
+                        "description": "Message request",
+                        "name": "message",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.Message"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
+        "/messages/{id}": {
+            "get": {
+                "description": "handler to fetch all past messages between the user and the bot",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "chat"
+                ],
+                "summary": "Get messages",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Account ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
+        "/query": {
+            "get": {
+                "description": "example for handling a request with a query",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "chat"
+                ],
+                "summary": "handle query",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "format": "email",
+                        "description": "name search by q",
+                        "name": "q",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "models.Message": {
+            "type": "object",
+            "properties": {
+                "body": {
+                    "type": "string",
+                    "example": "Hello my name is Artur"
+                },
+                "name": {
+                    "type": "string",
+                    "example": "gobot"
+                },
+                "timestamp": {
+                    "type": "string",
+                    "example": "2022-01-01T00:00:00Z"
+                },
+                "uuid": {
+                    "type": "integer",
+                    "example": 1
+                }
+            }
+        }
+    }
+}
