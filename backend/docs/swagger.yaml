@@ -1,21 +1,7 @@
-definitions:
-  models.Message:
-    properties:
-      body:
-        example: Hello my name is Artur
-        type: string
-      name:
-        example: gobot
-        type: string
-      timestamp:
-        example: "2022-01-01T00:00:00Z"
-        type: string
-      uuid:
-        example: 1
-        type: integer
-    type: object
+host: localhost:8080
 info:
-  contact: {}
+  contact:
+    name: Artur Shad Nik
   title: AI chatbot with Go
   version: "1.0"
 paths:
@@ -25,12 +11,11 @@ paths:
       - application/json
       description: Get a response to a question
       parameters:
-      - description: Message request
-        in: body
+      - description: Message
+        in: query
         name: message
         required: true
-        schema:
-          $ref: '#/definitions/models.Message'
+        type: string
       produces:
       - application/json
       responses:
@@ -56,25 +41,6 @@ paths:
         "200":
           description: OK
       summary: Get messages
-      tags:
-      - chat
-  /query:
-    get:
-      consumes:
-      - application/json
-      description: example for handling a request with a query
-      parameters:
-      - description: name search by q
-        format: email
-        in: query
-        name: q
-        type: string
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-      summary: handle query
       tags:
       - chat
 swagger: "2.0"

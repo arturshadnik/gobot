@@ -2,9 +2,12 @@
     "swagger": "2.0",
     "info": {
         "title": "AI chatbot with Go",
-        "contact": {},
+        "contact": {
+            "name": "Artur Shad Nik"
+        },
         "version": "1.0"
     },
+    "host": "localhost:8080",
     "paths": {
         "/chat": {
             "post": {
@@ -21,13 +24,11 @@
                 "summary": "Chat with a bot",
                 "parameters": [
                     {
-                        "description": "Message request",
+                        "type": "string",
+                        "description": "Message",
                         "name": "message",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/models.Message"
-                        }
+                        "in": "query",
+                        "required": true
                     }
                 ],
                 "responses": {
@@ -63,58 +64,6 @@
                     "200": {
                         "description": "OK"
                     }
-                }
-            }
-        },
-        "/query": {
-            "get": {
-                "description": "example for handling a request with a query",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "chat"
-                ],
-                "summary": "handle query",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "format": "email",
-                        "description": "name search by q",
-                        "name": "q",
-                        "in": "query"
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK"
-                    }
-                }
-            }
-        }
-    },
-    "definitions": {
-        "models.Message": {
-            "type": "object",
-            "properties": {
-                "body": {
-                    "type": "string",
-                    "example": "Hello my name is Artur"
-                },
-                "name": {
-                    "type": "string",
-                    "example": "gobot"
-                },
-                "timestamp": {
-                    "type": "string",
-                    "example": "2022-01-01T00:00:00Z"
-                },
-                "uuid": {
-                    "type": "integer",
-                    "example": 1
                 }
             }
         }

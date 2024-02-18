@@ -9,7 +9,9 @@ const docTemplate = `{
     "info": {
         "description": "{{escape .Description}}",
         "title": "{{.Title}}",
-        "contact": {},
+        "contact": {
+            "name": "Artur Shad Nik"
+        },
         "version": "{{.Version}}"
     },
     "host": "{{.Host}}",
@@ -30,13 +32,11 @@ const docTemplate = `{
                 "summary": "Chat with a bot",
                 "parameters": [
                     {
-                        "description": "Message request",
+                        "type": "string",
+                        "description": "Message",
                         "name": "message",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/models.Message"
-                        }
+                        "in": "query",
+                        "required": true
                     }
                 ],
                 "responses": {
@@ -74,58 +74,6 @@ const docTemplate = `{
                     }
                 }
             }
-        },
-        "/query": {
-            "get": {
-                "description": "example for handling a request with a query",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "chat"
-                ],
-                "summary": "handle query",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "format": "email",
-                        "description": "name search by q",
-                        "name": "q",
-                        "in": "query"
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK"
-                    }
-                }
-            }
-        }
-    },
-    "definitions": {
-        "models.Message": {
-            "type": "object",
-            "properties": {
-                "body": {
-                    "type": "string",
-                    "example": "Hello my name is Artur"
-                },
-                "name": {
-                    "type": "string",
-                    "example": "gobot"
-                },
-                "timestamp": {
-                    "type": "string",
-                    "example": "2022-01-01T00:00:00Z"
-                },
-                "uuid": {
-                    "type": "integer",
-                    "example": 1
-                }
-            }
         }
     }
 }`
@@ -133,7 +81,7 @@ const docTemplate = `{
 // SwaggerInfo holds exported Swagger Info so clients can modify it
 var SwaggerInfo = &swag.Spec{
 	Version:          "1.0",
-	Host:             "",
+	Host:             "localhost:8080",
 	BasePath:         "",
 	Schemes:          []string{},
 	Title:            "AI chatbot with Go",

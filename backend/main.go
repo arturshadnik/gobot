@@ -19,7 +19,6 @@ func main() {
 	router.GET("/ping", api.HealthCheck)
 	router.POST("/chat", api.BotResponse)
 	router.GET("/messages/:id", api.GetMessages)
-	router.GET("/query", api.HandlerWithQuery)
 
 	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 	router.Run()
