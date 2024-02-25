@@ -7,9 +7,9 @@ import (
 	"github.com/arturshadnik/gobot/backend/pkg/utils"
 )
 
-func ProcessIncomingMsg(message string) (string, error) {
+func ProcessIncomingMsg(message string, level string, id string) (string, error) {
 
-	err := db.StoreMessage(message, "user")
+	err := db.StoreMessage(message, level, "user")
 	if err != nil {
 		return "", err
 	}
@@ -37,7 +37,7 @@ func ProcessIncomingMsg(message string) (string, error) {
 		return "", err
 	}
 
-	err = db.StoreMessage(resp, "assistant")
+	err = db.StoreMessage(resp, level, "assistant")
 
 	if err != nil {
 		return "", nil

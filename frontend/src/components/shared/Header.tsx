@@ -1,7 +1,11 @@
+'use client'
+
 import Image from 'next/image'
-import { AppBar, Container } from '@mui/material'
+import { AppBar, Container, Button, Box } from '@mui/material'
+import { useAuth } from "@/lib/auth/authContext"
 
 function Header() {
+    const { user, signOut } = useAuth()
     return (
         <>
             <AppBar 
@@ -12,11 +16,14 @@ function Header() {
                     width:'100vw'
                 }}
             >
-                <Container maxWidth='xl'>
+                <Container maxWidth='xl' sx={{ display: 'flex', justifyContent: 'space-between'}}>
                     <Image src="/goot.png" alt='goot' width={70} height={70} priority={true}/>
-                    
+                    <Box>
+                        <Button onClick={signOut} sx={{ color: "black"}}>
+                            Sign Out
+                        </Button>
+                    </Box>
                 </Container>
-
             </AppBar>
         </>
 

@@ -3,6 +3,7 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import Header from '@/components/shared/Header'
 import { Suspense } from "react";
+import { AuthProvider } from "@/lib/auth/authContext";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -18,11 +19,13 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={inter.className}>      
-        <Suspense fallback="...">
-          <Header />
-        </Suspense>{children}
-      </body>
+      <AuthProvider>
+        <body className={inter.className}>
+          <Suspense fallback="...">
+            <Header />
+          </Suspense>{children}
+        </body>
+      </AuthProvider>
     </html>
   );
 }

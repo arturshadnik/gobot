@@ -1,8 +1,8 @@
 import React, { useState } from "react";
-import Link from 'next/link';
 import { useAuth } from '@/lib/auth/authContext';
 import { Box, Typography, Button } from '@mui/material';
 import GoogleSignIn from "@/components/shared/GoogleSignIn";
+import handleGoogleLogin from "@/lib/auth/authHandlers";
 
 function withAuthProtection(Component: React.ComponentType<any>) {
     return function ProtectedRoute(props: any) {
@@ -16,10 +16,14 @@ function withAuthProtection(Component: React.ComponentType<any>) {
                     flexDirection: "column",
                     alignItems: "center",
                     justifyContent: "center",
-                    gap: "1rem"
+                    gap: "1rem",
+                    width: "100vw",
+                    height: "100vh"                   
                 }}>
                     <Typography variant="h6" sx={{ fontWeight: "bold" }}>Sign in to continue</Typography>
-                    <Button sx={{ width: "fit-content", border: "none", padding: "0" }}>
+                    <Button 
+                        onClick={handleGoogleLogin}
+                        sx={{ width: "fit-content", border: "none", padding: "0" }}>
                         <GoogleSignIn className="h-6 w-6"/>
                     </Button>
                 </Box>
