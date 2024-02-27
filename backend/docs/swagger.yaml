@@ -1,0 +1,60 @@
+host: localhost:8080
+info:
+  contact:
+    name: Artur Shad Nik
+  title: AI chatbot with Go
+  version: "1.0"
+paths:
+  /chat/{id}:
+    get:
+      consumes:
+      - application/json
+      description: handler to fetch all past messages between the user and the bot
+      parameters:
+      - description: Difficulty Level
+        in: query
+        name: level
+        required: true
+        type: string
+      - description: Account ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+      summary: Get messages
+      tags:
+      - chat
+    post:
+      consumes:
+      - application/json
+      description: Get a response to a question
+      parameters:
+      - description: Message
+        in: query
+        name: message
+        required: true
+        type: string
+      - description: Difficulty Level
+        in: query
+        name: level
+        required: true
+        type: string
+      - description: Account ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+      summary: Chat with a bot
+      tags:
+      - chat
+swagger: "2.0"

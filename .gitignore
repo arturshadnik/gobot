@@ -20,6 +20,11 @@
 # Go workspace file
 go.work
 
+*.air.toml
+*build-errors.log
+
+*tmp/*
+
 # See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
 
 # dependencies
@@ -32,11 +37,11 @@ go.work
 /coverage
 
 # next.js
-/.next/
+*/.next/
 /out/
 
 # production
-/build
+*/build
 
 # misc
 .DS_Store
@@ -58,3 +63,6 @@ yarn-error.log*
 */next-env.d.ts
 
 *.env
+
+*keys*
+*google.json
