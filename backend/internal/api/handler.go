@@ -4,6 +4,7 @@ import (
 	"log"
 	"net/http"
 
+	"github.com/arturshadnik/gobot/backend/internal/db"
 	"github.com/arturshadnik/gobot/backend/internal/service"
 	"github.com/gin-gonic/gin"
 )
@@ -31,6 +32,15 @@ func BotResponse(c *gin.Context) {
 	level := c.Query("level")
 	id := c.Param("id")
 
+	if query == "conversation:reset" {
+		err := db.ClearConversation(level + id)
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"detail": "Internal Server Error"})
+		} else {
+			c.JSON(http.StatusOK, "Conversation History Reset.")
+		}
+		return
+	}
 	outgoingMessage, err := service.ProcessIncomingMsg(query, level, id)
 	if err != nil {
 		log.Printf("Error processing message %v ", err)
@@ -54,8 +64,17 @@ func GetMessages(c *gin.Context) {
 
 	level := c.Query("level")
 	id := c.Param("id")
-	c.JSON(http.StatusOK, gin.H{
-		"id":    id,
-		"level": level,
-	})
+	convo, err := db.LoadConversation(id, level)
+	if err != nil {
+		log.Print(err)
+		c.JSON(http.StatusInternalServerError, gin.H{"detail": "Internal Server Error"})
+	}
+
+	messages, err := db.GetMessages(convo.Messages)
+	if err != nil {
+		log.Print(err)
+		c.JSON(http.StatusInternalServerError, gin.H{"detail": "Internal Server Error"})
+	}
+
+	c.JSON(http.StatusOK, messages)
 }

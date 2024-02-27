@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"errors"
 	"io"
+	"log"
 	"net/http"
 
 	"github.com/arturshadnik/gobot/backend/internal/config"
@@ -19,7 +20,7 @@ func GetOpenAIResponse(requestConfig map[string]any) (string, error) {
 	}
 	reqBody := bytes.NewBuffer(jsonData)
 	req, err := http.NewRequest("POST", config.OpenAIUrl, reqBody)
-
+	log.Print(reqBody)
 	if err != nil {
 		return "", err
 	}
