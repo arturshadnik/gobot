@@ -67,13 +67,15 @@ func GetMessages(c *gin.Context) {
 	convo, err := db.LoadConversation(id, level)
 	if err != nil {
 		log.Print(err)
-		c.JSON(http.StatusInternalServerError, gin.H{"detail": "Internal Server Error"})
+		c.JSON(http.StatusNotFound, gin.H{"detail": "Conversation not found"})
+		return
 	}
 
 	messages, err := db.GetMessages(convo.Messages)
 	if err != nil {
 		log.Print(err)
 		c.JSON(http.StatusInternalServerError, gin.H{"detail": "Internal Server Error"})
+		return
 	}
 
 	c.JSON(http.StatusOK, messages)
