@@ -25,9 +25,10 @@ jobs:
       - name: Build
         run: pnpm build
         working-directory: ./frontend
+      - name: Copy firebase config
+        run: cp ./frontend/firebase.json ./firebase.json && cp ./frontend/firestore.indexes.json ./firestore.indexes.json && cp ./frontend/firestore.rules ./firestore.rules && cp ./frontend/.firebaserc ./.firebaserc
       - uses: FirebaseExtended/action-hosting-deploy@v0
         with:
           repoToken: '${{ secrets.GITHUB_TOKEN }}'
           firebaseServiceAccount: '${{ secrets.FIREBASE_SERVICE_ACCOUNT_RESEARCH_QUERY }}'
           projectId: research-query
-        working-directory: ./frontend
