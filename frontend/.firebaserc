@@ -1,0 +1,11 @@
+{
+  "projects": {
+    "default": "research-query"
+  },
+  "targets": {},
+  "etags": {
+    "research-query": {
+      "extensionInstances": {}
+    }
+  }
+}
