@@ -11,7 +11,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - run: npm i pnpm && pnpm i --frozen-lockfile && pnpm build
+      - name: Install pnpm
+        run: npm i pnpm
+      - name: Install dependencies
+        run: pnpm i --frozen-lockfile
+      - name: Build
+        run: pnpm build
       - uses: FirebaseExtended/action-hosting-deploy@v0
         with:
           repoToken: '${{ secrets.GITHUB_TOKEN }}'
