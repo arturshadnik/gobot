@@ -29,3 +29,4 @@ jobs:
           firebaseServiceAccount: '${{ secrets.FIREBASE_SERVICE_ACCOUNT_RESEARCH_QUERY }}'
           channelId: live
           projectId: research-query
+        working-directory: ./frontend
