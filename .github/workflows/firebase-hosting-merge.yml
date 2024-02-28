@@ -18,7 +18,7 @@ jobs:
         working-directory: ./frontend
       - name: Create .env file
         run: |
-          echo "${{ secrets.ENV_FILE }}" > ./frontend/.env
+          echo "${{ secrets.ENV_FILE }}" > ./.env
         working-directory: ./frontend
       - name: Build
         run: pnpm build
