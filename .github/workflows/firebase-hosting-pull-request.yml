@@ -13,9 +13,24 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - run: npm i pnpm && pnpm i --frozen-lockfile && pnpm build
+      - name: Install pnpm
+        run: npm i -g pnpm
+      - name: Install dependencies
+        run: pnpm i --frozen-lockfile
+        working-directory: ./frontend
+      - name: Create .env file
+        run: |
+          echo "${{ secrets.ENV_FILE }}" > ./.env
+        working-directory: ./frontend
+      - name: Build
+        run: pnpm build
+        working-directory: ./frontend
+      - name: Copy firebase config
+        run: cp ./frontend/firebase.json ./firebase.json && cp ./frontend/firestore.indexes.json ./firestore.indexes.json && cp ./frontend/firestore.rules ./firestore.rules && cp ./frontend/.firebaserc ./.firebaserc
       - uses: FirebaseExtended/action-hosting-deploy@v0
         with:
           repoToken: '${{ secrets.GITHUB_TOKEN }}'
           firebaseServiceAccount: '${{ secrets.FIREBASE_SERVICE_ACCOUNT_RESEARCH_QUERY }}'
           projectId: research-query
+        env:
+          FIREBASE_CLI_EXPERIMENTS: webframeworks
