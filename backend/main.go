@@ -22,7 +22,7 @@ func main() {
 	router := gin.Default()
 
 	config := cors.DefaultConfig()
-	config.AllowedOrigins = []string{"http://localhost:8000", "https://gobot-backend-ew7jmfmn3a-uw.a.run.app"}
+	config.AllowedOrigins = []string{"http://localhost:3000", "https://gobot-backend-ew7jmfmn3a-uw.a.run.app"}
 	config.AllowedMethods = []string{"GET", "POST"}
 	config.AllowedHeaders = []string{"*"}
 
