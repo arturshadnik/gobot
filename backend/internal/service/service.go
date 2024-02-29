@@ -26,9 +26,11 @@ func ProcessIncomingMsg(message string, level string, id string) (models.ConvoMe
 	if err != nil {
 		return models.ConvoMessage{}, err
 	}
+
 	for _, msg := range messages {
-		delete(msg, "Timestamp")
+		delete(msg, "timestamp")
 	}
+
 	convConfig, err := config.GetLevelSettings(level)
 	if err != nil {
 		return models.ConvoMessage{}, err
