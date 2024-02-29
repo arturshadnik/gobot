@@ -1,8 +1,18 @@
-host: localhost:8080
+definitions:
+  models.ConvoMessage:
+    properties:
+      content:
+        type: string
+      role:
+        type: string
+      timestamp:
+        type: string
+    type: object
+host: gobot-backend-ew7jmfmn3a-uw.a.run.app
 info:
   contact:
     name: Artur Shad Nik
-  title: AI chatbot with Go
+  title: Gen AI capture the flag with Go
   version: "1.0"
 paths:
   /chat/{id}:
@@ -54,6 +64,10 @@ paths:
       responses:
         "200":
           description: OK
+          schema:
+            $ref: '#/definitions/models.ConvoMessage'
+        "500":
+          description: Internal Server Error
       summary: Chat with a bot
       tags:
       - chat
