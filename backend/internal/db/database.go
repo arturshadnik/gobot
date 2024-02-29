@@ -91,8 +91,8 @@ func LoadConversation(userId, level string) (models.Conversation, error) {
 	return conversation, nil
 }
 
-func GetMessages(msgIds []string) ([]map[string]string, error) {
-	var messages []map[string]string
+func GetMessages(msgIds []string) ([]map[string]any, error) {
+	var messages []map[string]any
 	c := context.Background()
 
 	for _, msgId := range msgIds {
@@ -150,7 +150,7 @@ func getConvoRef(convoId string) *firestore.DocumentRef {
 	return convoRef
 }
 
-func loadOneMessage(msgId string, c context.Context) (map[string]string, error) {
+func loadOneMessage(msgId string, c context.Context) (map[string]any, error) {
 	msgRef := Client.Collection("messages").Doc(msgId)
 	msgSnapshot, err := msgRef.Get(c)
 	if err != nil {
@@ -159,9 +159,10 @@ func loadOneMessage(msgId string, c context.Context) (map[string]string, error) 
 	var msgMap models.ConvoMessage
 
 	msgSnapshot.DataTo(&msgMap)
-	returnMsg := map[string]string{
-		"role":    msgMap.Role,
-		"content": msgMap.Content,
+	returnMsg := map[string]any{
+		"role":      msgMap.Role,
+		"content":   msgMap.Content,
+		"timestamp": msgMap.Timestamp,
 	}
 
 	return returnMsg, nil

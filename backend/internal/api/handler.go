@@ -5,6 +5,7 @@ import (
 	"net/http"
 
 	"github.com/arturshadnik/gobot/backend/internal/db"
+	_ "github.com/arturshadnik/gobot/backend/internal/models"
 	"github.com/arturshadnik/gobot/backend/internal/service"
 	"github.com/gin-gonic/gin"
 )
@@ -24,7 +25,8 @@ func HealthCheck(c *gin.Context) {
 // @Param message query string true "Message"
 // @Param level query string true "Difficulty Level"
 // @Param id path int true "Account ID"
-// @Success 200
+// @Success 200 {object} models.ConvoMessage
+// @Failure 500
 // @Router /chat/{id} [post]
 func BotResponse(c *gin.Context) {
 

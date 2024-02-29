@@ -89,8 +89,30 @@ const docTemplate = `{
                 ],
                 "responses": {
                     "200": {
-                        "description": "OK"
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.ConvoMessage"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
                     }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "models.ConvoMessage": {
+            "type": "object",
+            "properties": {
+                "content": {
+                    "type": "string"
+                },
+                "role": {
+                    "type": "string"
+                },
+                "timestamp": {
+                    "type": "string"
                 }
             }
         }
@@ -100,10 +122,10 @@ const docTemplate = `{
 // SwaggerInfo holds exported Swagger Info so clients can modify it
 var SwaggerInfo = &swag.Spec{
 	Version:          "1.0",
-	Host:             "localhost:8080",
+	Host:             "gobot-backend-ew7jmfmn3a-uw.a.run.app",
 	BasePath:         "",
 	Schemes:          []string{},
-	Title:            "AI chatbot with Go",
+	Title:            "Gen AI capture the flag with Go",
 	Description:      "",
 	InfoInstanceName: "swagger",
 	SwaggerTemplate:  docTemplate,

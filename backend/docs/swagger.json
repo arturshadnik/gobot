@@ -1,13 +1,13 @@
 {
     "swagger": "2.0",
     "info": {
-        "title": "AI chatbot with Go",
+        "title": "Gen AI capture the flag with Go",
         "contact": {
             "name": "Artur Shad Nik"
         },
         "version": "1.0"
     },
-    "host": "localhost:8080",
+    "host": "gobot-backend-ew7jmfmn3a-uw.a.run.app",
     "paths": {
         "/chat/{id}": {
             "get": {
@@ -81,8 +81,30 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "OK"
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.ConvoMessage"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
                     }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "models.ConvoMessage": {
+            "type": "object",
+            "properties": {
+                "content": {
+                    "type": "string"
+                },
+                "role": {
+                    "type": "string"
+                },
+                "timestamp": {
+                    "type": "string"
                 }
             }
         }

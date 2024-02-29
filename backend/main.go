@@ -1,7 +1,7 @@
-// @title           AI chatbot with Go
+// @title           Gen AI capture the flag with Go
 // @version         1.0
 // @contact.name Artur Shad Nik
-// @host localhost:8080
+// @host gobot-backend-ew7jmfmn3a-uw.a.run.app
 
 package main
 

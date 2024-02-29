@@ -5,7 +5,7 @@ import "time"
 type ConvoMessage struct {
 	Role      string
 	Content   string
-	timestamp time.Time
+	Timestamp time.Time
 }
 
 type Conversation struct {
