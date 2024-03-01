@@ -9,7 +9,7 @@ const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
   title: "Goot",
-  description: "Simple AI chatbot built with a Go backend.",
+  description: "Gen AI capture the flag",
 };
 
 export default function RootLayout({
