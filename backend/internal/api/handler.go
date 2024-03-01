@@ -39,7 +39,7 @@ func BotResponse(c *gin.Context) {
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, gin.H{"detail": "Internal Server Error"})
 		} else {
-			c.JSON(http.StatusOK, "Conversation History Reset.")
+			c.JSON(http.StatusNoContent, gin.H{})
 		}
 		return
 	}
