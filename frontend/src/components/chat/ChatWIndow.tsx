@@ -73,12 +73,13 @@ const ChatWindow: React.FC = () => {
     }
 
     const handleLevelChange = (newLevel: string) => {
+        setErrorMessage("")
         router.push(pathname + '?level=' + newLevel);
     }
 
     return (
         <Container sx={{
-            width: "90%",
+            width: "100%",
             border: "1px solid #ccc",
             padding: "10px",
             margin: "auto",

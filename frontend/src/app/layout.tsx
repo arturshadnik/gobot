@@ -22,7 +22,7 @@ export default function RootLayout({
       <AuthProvider>
         <body className={inter.className}>
           <Suspense fallback="...">
-            <Header />
+            {/* <Header /> */}
           </Suspense>{children}
         </body>
       </AuthProvider>

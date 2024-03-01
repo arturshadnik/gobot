@@ -11,7 +11,7 @@ function Home() {
   
   return (
     <main className={styles.main}>
-      <Box>
+      <Box sx={{ width: "80%"}}>
         <ChatWindow />
       </Box>
     </main>
