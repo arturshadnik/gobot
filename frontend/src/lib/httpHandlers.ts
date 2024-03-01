@@ -11,12 +11,12 @@ async function formatHeaders(user: User) {
     }
 }
 
-export async function sendMessage(user: User, message: string, level: string) {
-    const headers = await formatHeaders(user);
-    return await axios.post(`${backend_url}/chat/${user.uid}?message=${message}&level=${level}`, {}, headers)
+export async function sendMessage(user: string, message: string, level: string) {
+    // const headers = await formatHeaders(user);
+    return await axios.post(`${backend_url}/chat/${user}?message=${message}&level=${level}`)
 }
 
-export async function fetchMessages(user: User, level: string) {
-    const headers = await formatHeaders(user);
-    return await axios.get(`${backend_url}/chat/${user.uid}?level=${level}`, headers)
+export async function fetchMessages(user: string, level: string) {
+    // const headers = await formatHeaders(user);
+    return await axios.get(`${backend_url}/chat/${user}?level=${level}`)
 }

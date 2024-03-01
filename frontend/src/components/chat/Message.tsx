@@ -1,6 +1,5 @@
-import React, { useLayoutEffect, useState } from "react";
+import React from "react";
 import { Card, CardContent, Typography } from '@mui/material';
-import { useAuth } from "@/lib/auth/authContext";
 
 interface MessageProps {
     role: string;
@@ -9,7 +8,6 @@ interface MessageProps {
 }
 
 const Message: React.FC<MessageProps> = ({ role, content, timestamp }) => {
-    const { user } = useAuth()
     const getBackgroundColor = (role: string) => {
         switch (role) {
             case 'user':
@@ -22,7 +20,8 @@ const Message: React.FC<MessageProps> = ({ role, content, timestamp }) => {
     const formatRole = (role: string) => {
         switch (role) {
             case 'user':
-                return user?.displayName;
+                const almostUniqueName = localStorage.getItem("userName");
+                return almostUniqueName?.split("-")[0]
             case 'assistant':
                 return "Goot"
         }

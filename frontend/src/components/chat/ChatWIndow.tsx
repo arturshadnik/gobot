@@ -6,13 +6,11 @@ import MessageInput from "@/components/chat/MessageInput";
 import { MessageProps } from "@/components/chat/Message"
 import LevelDropdown from "../LevelDropdown";
 
-import { useAuth } from "@/lib/auth/authContext"
 import { sendMessage, fetchMessages } from "@/lib/httpHandlers"
 import { AxiosError } from "axios";
 
 const ChatWindow: React.FC = () => {
     const [messages, setMessages] = useState<Array<MessageProps>>([])
-    const { user } = useAuth()
     const [apiKey, setApiKey] = useState<string>("")
     const [errorMessage, setErrorMessage] = useState<string>("")
 
@@ -21,9 +19,10 @@ const ChatWindow: React.FC = () => {
     const pathname = usePathname()
 
     const level: string = searchParams.get('level') || 'easy'
+    const user: string = localStorage.getItem("userName") || ""
 
     useEffect(() => {
-        fetchMessages(user!, level)
+        fetchMessages(user, level)
         .then(
             (messages) => {
                 setMessages(messages.data)
@@ -50,7 +49,7 @@ const ChatWindow: React.FC = () => {
         } else {
             const newMessageProp: MessageProps = { role: "user", content: newMessage, timestamp: Date.toString() }
             setMessages([...messages, newMessageProp])
-            sendMessage(user!, newMessage, level)
+            sendMessage(user, newMessage, level)
             .then(
                 (resp) => {
                     if (resp.status === 204) {
@@ -98,7 +97,6 @@ const ChatWindow: React.FC = () => {
                     helperText={errorMessage}
                 />
             </Box>
-            
             <MessageList messages={messages} />
             <MessageInput onSendMessage={handleSendMessage} />
         </Container>
