@@ -46,14 +46,14 @@ const ChatWindow: React.FC = () => {
     })
 
     const handleSendMessage = (newMessage: string) => {
-        if (level === 'hard' && apiKey === "") {
+        if (level !== 'easy' && apiKey === "") {
             setErrorMessage("Please enter an API key to access the final level")
         } else if (user === "") {
             setUserError("Please enter your name")
         } else {
             const newMessageProp: MessageProps = { role: "user", content: newMessage, timestamp: Date.toString(), user: user }
             setMessages([...messages, newMessageProp])
-            sendMessage(user, newMessage, level)
+            sendMessage(user, newMessage, level, apiKey)
                 .then(
                     (resp) => {
                         if (resp.status === 204) {

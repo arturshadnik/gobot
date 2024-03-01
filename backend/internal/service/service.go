@@ -11,7 +11,7 @@ import (
 	"github.com/arturshadnik/gobot/backend/pkg/utils"
 )
 
-func ProcessIncomingMsg(message string, level string, id string) (models.ConvoMessage, error) {
+func ProcessIncomingMsg(message string, level string, id string, apiKey string) (models.ConvoMessage, error) {
 	err := db.StoreMessage(message, level, "user", id)
 	if err != nil {
 		return models.ConvoMessage{}, err
@@ -49,7 +49,7 @@ func ProcessIncomingMsg(message string, level string, id string) (models.ConvoMe
 		"messages":    messages,
 	}
 
-	resp, err := utils.GetOpenAIResponse(openaiCompletionConfig)
+	resp, err := utils.GetOpenAIResponse(openaiCompletionConfig, apiKey)
 	if err != nil {
 		return models.ConvoMessage{}, err
 	}

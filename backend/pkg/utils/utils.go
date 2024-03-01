@@ -12,7 +12,7 @@ import (
 	"github.com/arturshadnik/gobot/backend/internal/models"
 )
 
-func GetOpenAIResponse(requestConfig map[string]any) (string, error) {
+func GetOpenAIResponse(requestConfig map[string]any, apiKey string) (string, error) {
 
 	jsonData, err := json.Marshal(requestConfig)
 	if err != nil {
@@ -24,9 +24,14 @@ func GetOpenAIResponse(requestConfig map[string]any) (string, error) {
 	if err != nil {
 		return "", err
 	}
-	req.Header.Set("Content-Type", "application/json")
-	req.Header.Set("Authorization", "Bearer "+config.OpenAIApiKey)
 
+	if apiKey == "" {
+		apiKey = config.OpenAIApiKey
+		log.Print("using default key")
+	}
+
+	req.Header.Set("Content-Type", "application/json")
+	req.Header.Set("Authorization", "Bearer "+apiKey)
 	client := &http.Client{}
 	resp, err := client.Do(req)
 
