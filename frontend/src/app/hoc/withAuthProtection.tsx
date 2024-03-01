@@ -1,37 +1,45 @@
+'use client'
+
 import React, { useState, useEffect } from "react";
 import { Box, Typography, Button, TextField } from '@mui/material';
 import { Save } from "@mui/icons-material";
+import { useRouter } from "next/navigation" 
 
 function withAuthProtection(Component: React.ComponentType<any>) {
     return function ProtectedRoute(props: any) {
-        const [userName, setUserName] = useState<string | null>(localStorage.getItem('userName'));
+        // const [userName, setUserName] = useState<string | null>(localStorage.getItem('userName'));
         const [userText, setUserText] = useState<string>('');
         const [userError, setUserError] = useState<string>('');
+        const [loggedIn, setLoggedIn] = useState<boolean>(false)
+        const router = useRouter()
+        // useEffect(() => {
+        //     // Update the userName state if it changes in localStorage
+        //     const handleStorageChange = () => {
+        //         setUserName(localStorage.getItem('userName'));
+        //     };
 
-        useEffect(() => {
-            // Update the userName state if it changes in localStorage
-            const handleStorageChange = () => {
-                setUserName(localStorage.getItem('userName'));
-            };
+        //     window.addEventListener('storage', handleStorageChange);
 
-            window.addEventListener('storage', handleStorageChange);
-
-            return () => {
-                window.removeEventListener('storage', handleStorageChange);
-            };
-        }, []);
+        //     return () => {
+        //         window.removeEventListener('storage', handleStorageChange);
+        //     };
+        // }, []);
 
         const handleUserChange = (name: string) => {
             if (name.trim() === '') {
                 setUserError('Name cannot be empty');
                 return;
             }
+
             const almostUniqueName = `${name}-${Date.now()}` // if anyone reads this, dont laugh. firestore auth is blocked by HCL :)))
-            localStorage.setItem('userName', almostUniqueName);
-            setUserName(name);
+            // localStorage.setItem('userName', almostUniqueName);
+            // setUserName(name);
+            setLoggedIn(true)
+            router.push(`/${almostUniqueName}`);
+
         };
 
-        if (!userName) {
+        if (!loggedIn) {
             return (
                 <Box sx={{
                     display: "flex",
