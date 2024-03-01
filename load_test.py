@@ -14,9 +14,6 @@ async def test():
         tasks = [send_one_request(session, uid) for uid in range(1000)]
         results = await asyncio.gather(*tasks)
 
-        for result in results:
-            print(result)
-
     print(f"Finished in {time.time() - start} seconds")
     print(results.count(200))
 
