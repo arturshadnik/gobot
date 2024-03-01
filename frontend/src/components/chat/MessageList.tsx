@@ -4,9 +4,10 @@ import Message, { MessageProps } from "@/components/chat/Message";
 
 interface MessageListProps {
     messages: MessageProps[];
+    user: string
 }
 
-const MessageList: React.FC<MessageListProps> = ({ messages }) => {
+const MessageList: React.FC<MessageListProps> = ({ messages, user }) => {
     const endOfMessageRef = useRef<null | HTMLDivElement>(null);
 
     const scrollToBottom = () => {
@@ -20,7 +21,7 @@ const MessageList: React.FC<MessageListProps> = ({ messages }) => {
     return (
         <List sx={{ maxHeight: "700px", overflow: "auto"}}>
             {messages.map((message, index) => (
-                <Message key={index} role={message.role} content={message.content} timestamp={message.timestamp} />
+                <Message key={index} role={message.role} content={message.content} timestamp={message.timestamp} user={user}/>
             ))}
             <div ref={endOfMessageRef} />
         </List>

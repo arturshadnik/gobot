@@ -1,7 +1,6 @@
 'use client'
 
 import React from "react"
-import Image from "next/image";
 import styles from "./page.module.css";
 import { Box } from "@mui/material"
 import withAuthProtection from "./hoc/withAuthProtection";
@@ -18,4 +17,5 @@ function Home() {
   );
 }
 
-export default withAuthProtection(Home)
+// export default withAuthProtection(Home)
+export default Home
