@@ -1,11 +1,13 @@
 package api
 
 import (
+	"encoding/json"
+	"io"
 	"log"
 	"net/http"
 
 	"github.com/arturshadnik/gobot/backend/internal/db"
-	_ "github.com/arturshadnik/gobot/backend/internal/models"
+	"github.com/arturshadnik/gobot/backend/internal/models"
 	"github.com/arturshadnik/gobot/backend/internal/service"
 	"github.com/gin-gonic/gin"
 )
@@ -43,7 +45,23 @@ func BotResponse(c *gin.Context) {
 		}
 		return
 	}
-	outgoingMessage, err := service.ProcessIncomingMsg(query, level, id)
+
+	body, err := io.ReadAll(c.Request.Body)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Error reading request body"})
+		return
+	}
+	var apiKey string
+	if len(body) > 0 {
+		var reqBody models.Request
+		if err := json.Unmarshal(body, &reqBody); err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+			return
+		}
+		apiKey = reqBody.ApiKey
+	}
+
+	outgoingMessage, err := service.ProcessIncomingMsg(query, level, id, apiKey)
 	if err != nil {
 		log.Printf("Error processing message %v ", err)
 		c.JSON(http.StatusInternalServerError, gin.H{"detail": "Internal Server Error"})
