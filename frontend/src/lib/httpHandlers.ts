@@ -11,18 +11,22 @@ async function formatHeaders(user: User) {
     }
 }
 
-export async function sendMessage(user: string, message: string, level: string, apiKey: string) {
-    // const headers = await formatHeaders(user);
+export async function sendMessage(user: User, message: string, level: string, apiKey: string) {
+    const headers = await formatHeaders(user);
     let reqBody
     if (apiKey !== ""){
         reqBody = {
             "apiKey": apiKey
         }
     }
-    return await axios.post(`${backend_url}/chat/${user}?message=${message}&level=${level}`, reqBody)
+    return await axios.post(
+                    `${backend_url}/chat/${user}?message=${message}&level=${level}`,
+                    reqBody,
+                    headers
+                )
 }
 
-export async function fetchMessages(user: string, level: string) {
-    // const headers = await formatHeaders(user);
-    return await axios.get(`${backend_url}/chat/${user}?level=${level}`)
+export async function fetchMessages(user: User, level: string) {
+    const headers = await formatHeaders(user);
+    return await axios.get(`${backend_url}/chat/${user}?level=${level}`, headers)
 }
