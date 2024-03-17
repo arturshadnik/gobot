@@ -17,5 +17,4 @@ function Home() {
   );
 }
 
-// export default withAuthProtection(Home)
-export default Home
+export default withAuthProtection(Home)

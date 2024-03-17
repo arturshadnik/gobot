@@ -1,11 +1,12 @@
 import React, { useLayoutEffect, useState } from "react";
 import { Card, CardContent, Typography } from '@mui/material';
+import { User } from "firebase/auth"
 
 interface MessageProps {
     role: string;
     content: string;
     timestamp: string;
-    user: string;
+    user: User;
 }
 
 const Message: React.FC<MessageProps> = ({ role, content, timestamp, user }) => {
@@ -21,7 +22,7 @@ const Message: React.FC<MessageProps> = ({ role, content, timestamp, user }) => 
     const formatRole = (role: string) => {
         switch (role) {
             case 'user':
-                const name = user.split("-")[0]
+                const name = user.displayName ? user.displayName : user.email
                 return name;
             case 'assistant':
                 return "Goot"

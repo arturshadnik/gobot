@@ -9,5 +9,5 @@ type ConvoMessage struct {
 }
 
 type Conversation struct {
-	Messages []string
+	Timestamp time.Time
 }

@@ -1,10 +1,11 @@
 import React, { useEffect, useRef } from "react";
 import { List } from "@mui/material";
 import Message, { MessageProps } from "@/components/chat/Message";
+import { User } from "firebase/auth"
 
 interface MessageListProps {
     messages: MessageProps[];
-    user: string
+    user: User
 }
 
 const MessageList: React.FC<MessageListProps> = ({ messages, user }) => {

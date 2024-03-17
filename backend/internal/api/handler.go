@@ -10,6 +10,8 @@ import (
 	"github.com/arturshadnik/gobot/backend/internal/models"
 	"github.com/arturshadnik/gobot/backend/internal/service"
 	"github.com/gin-gonic/gin"
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
 )
 
 func HealthCheck(c *gin.Context) {
@@ -84,15 +86,12 @@ func GetMessages(c *gin.Context) {
 
 	level := c.Query("level")
 	id := c.Param("id")
-	convo, err := db.LoadConversation(id, level)
+	messages, err := db.GetMessages(level + id)
 	if err != nil {
-		log.Print(err)
-		c.JSON(http.StatusNotFound, gin.H{"detail": "Conversation not found"})
-		return
-	}
-
-	messages, err := db.GetMessages(convo.Messages)
-	if err != nil {
+		if status.Code(err) == codes.NotFound || len(messages) == 0 {
+			c.JSON(http.StatusNotFound, gin.H{"detail": "Conversation Not Found"})
+			return
+		}
 		log.Print(err)
 		c.JSON(http.StatusInternalServerError, gin.H{"detail": "Internal Server Error"})
 		return

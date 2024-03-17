@@ -17,14 +17,14 @@ func ProcessIncomingMsg(message string, level string, id string, apiKey string) 
 		return models.ConvoMessage{}, err
 	}
 
-	conversation, err := db.LoadConversation(id, level)
+	messagesDTO, err := db.GetMessages(level + id)
 	if err != nil {
 		return models.ConvoMessage{}, err
 	}
 
-	messages, err := db.GetMessages(conversation.Messages)
-	if err != nil {
-		return models.ConvoMessage{}, err
+	var messages []map[string]string
+	for _, msg := range messagesDTO {
+		messages = append(messages, map[string]string{"role": msg.Role, "content": msg.Content})
 	}
 
 	for _, msg := range messages {
@@ -36,7 +36,7 @@ func ProcessIncomingMsg(message string, level string, id string, apiKey string) 
 		return models.ConvoMessage{}, err
 	}
 
-	sysMsg := []map[string]any{{
+	sysMsg := []map[string]string{{
 		"role":    "system",
 		"content": convConfig.Prompt,
 	}}

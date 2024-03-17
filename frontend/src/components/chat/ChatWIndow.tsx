@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Container, Box, TextField, Button } from "@mui/material";
-import { Save } from "@mui/icons-material"
+import { Container, Box, TextField, Typography } from "@mui/material";
 import { usePathname, useSearchParams, useRouter } from "next/navigation";
 import MessageList from "@/components/chat/MessageList";
 import MessageInput from "@/components/chat/MessageInput";
@@ -8,14 +7,13 @@ import { MessageProps } from "@/components/chat/Message"
 import LevelDropdown from "../LevelDropdown";
 import { sendMessage, fetchMessages } from "@/lib/httpHandlers"
 import { AxiosError } from "axios";
+import { useAuth } from "@/lib/auth/authContext"
 
 const ChatWindow: React.FC = () => {
     const [messages, setMessages] = useState<Array<MessageProps>>([])
     const [apiKey, setApiKey] = useState<string>("")
     const [errorMessage, setErrorMessage] = useState<string>("")
-    const [userText, setUserText] = useState<string>("")
-    const [user, setUser] = useState<string>("")
-    const [userError, setUserError] = useState<string>("")
+    const { user } = useAuth(); 
 
     const searchParams = useSearchParams()
     const router = useRouter()
@@ -24,7 +22,7 @@ const ChatWindow: React.FC = () => {
     const level: string = searchParams.get('level') || 'easy'
 
     useEffect(() => {
-        fetchMessages(user, level)
+        fetchMessages(user!, level)
             .then(
                 (messages) => {
                     setMessages(messages.data)
@@ -40,20 +38,13 @@ const ChatWindow: React.FC = () => {
             )
     }, [level, user]);
 
-
-    useEffect(() => {
-
-    })
-
     const handleSendMessage = (newMessage: string) => {
         if (level !== 'easy' && apiKey === "") {
             setErrorMessage("Please enter an API key to access the final level")
-        } else if (user === "") {
-            setUserError("Please enter your name")
         } else {
-            const newMessageProp: MessageProps = { role: "user", content: newMessage, timestamp: Date.toString(), user: user }
+            const newMessageProp: MessageProps = { role: "user", content: newMessage, timestamp: Date.toString(), user: user! }
             setMessages([...messages, newMessageProp])
-            sendMessage(user, newMessage, level, apiKey)
+            sendMessage(user!, newMessage, level, apiKey)
                 .then(
                     (resp) => {
                         if (resp.status === 204) {
@@ -63,7 +54,7 @@ const ChatWindow: React.FC = () => {
                                 role: resp.data.Role,
                                 content: resp.data.Content,
                                 timestamp: resp.data.Timestamp,
-                                user: ""
+                                user: user!
                             };
                             setMessages((prevMessages) => [...prevMessages, remappedData])
                         }
@@ -81,12 +72,6 @@ const ChatWindow: React.FC = () => {
         router.push(pathname + '?level=' + newLevel);
     }
 
-    const handleUserChange = (newUser: string) => {
-        setUserError("")
-        const almostUniqueUser = `${newUser}-${Date.now()}`
-        setUser(almostUniqueUser)
-    }
-
     return (
         <Container sx={{
             width: "100%",
@@ -96,22 +81,8 @@ const ChatWindow: React.FC = () => {
             boxSizing: "border-box",
 
         }}>
-
-            <Box sx={{ display: "flex", padding: "5px" }}>
-                <TextField
-                    label="Name"
-                    variant="outlined"
-                    fullWidth
-                    value={userText}
-                    onChange={(e) => { setUserText(e.target.value), setUserError("") }}
-                    error={!!userError}
-                    helperText={userError}
-                    onKeyDown={(e) => e.key === 'Enter' && setUser(userText)}
-                    disabled={user !== ''}
-                />
-                <Button variant="contained" color="primary" onClick={() => handleUserChange(userText)} disabled={user !== ''}>
-                    <Save />
-                </Button>
+            <Box sx={{ display: "flex" }}>
+                <Typography ></Typography>
             </Box>
             <Box sx={{ display: "flex" }}>
                 <LevelDropdown level={level} levels_list={["easy", "medium", "hard"]} handleLevelChange={handleLevelChange} />
@@ -125,7 +96,7 @@ const ChatWindow: React.FC = () => {
                     helperText={errorMessage}
                 />
             </Box>
-            <MessageList messages={messages} user={user} />
+            <MessageList messages={messages} user={user!} />
             <MessageInput onSendMessage={handleSendMessage} />
         </Container>
     )

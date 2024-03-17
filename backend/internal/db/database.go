@@ -4,11 +4,11 @@ package db
 import (
 	"context"
 	"log"
-	"reflect"
 	"time"
 
 	"cloud.google.com/go/firestore"
 	"github.com/arturshadnik/gobot/backend/internal/models"
+	"google.golang.org/api/iterator"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )
@@ -33,26 +33,15 @@ func CloseFirestore() {
 
 func StoreMessage(message, level, role, userId string) error {
 	c := context.Background()
-	docRef, _, err := Client.Collection("messages").Add(c, map[string]interface{}{
-		"content":   message,
-		"role":      role,
-		"timestamp": time.Now(),
-	})
-	if err != nil {
-		log.Printf("Write to firestore failed! %v", err)
-		return err
-	}
 
 	convoId := level + userId
-	convoRef := getConvoRef(convoId)
+	convoRef := Client.Collection("conversations").Doc(convoId)
 
-	messageId := docRef.ID
-	_, err = convoRef.Get(c)
+	_, err := convoRef.Get(c)
 	if err != nil {
 		if status.Code(err) == codes.NotFound {
-			messages := []string{messageId}
 			_, err = Client.Collection("conversations").Doc(convoId).Create(c, map[string]interface{}{
-				"messages": messages,
+				"timestamp": time.Now(),
 			})
 			if err != nil {
 				return err
@@ -61,80 +50,56 @@ func StoreMessage(message, level, role, userId string) error {
 			log.Printf("Something went wrong: %v", err)
 			return err
 		}
-
-	} else {
-		_, err = convoRef.Update(c, []firestore.Update{{Path: "messages", Value: firestore.ArrayUnion(messageId)}})
-		if err != nil {
-			return err
-		}
 	}
+	_, err = convoRef.Collection("messages").NewDoc().Create(c, map[string]interface{}{
+		"role": role, "content": message, "timestamp": time.Now(),
+	})
+	if err != nil {
+		return err
+	}
+
 	return nil
 }
 
-func LoadConversation(userId, level string) (models.Conversation, error) {
+func GetMessages(convoId string) ([]models.Message, error) {
 	c := context.Background()
-	convoId := level + userId
 
-	convoRef := getConvoRef(convoId)
-	convoSnapshot, err := convoRef.Get(c)
+	convoRef := Client.Collection("conversations").Doc(convoId)
+
+	_, err := convoRef.Get(c)
+
 	if err != nil {
-		if status.Code(err) == codes.NotFound {
-			log.Printf("Conversation not found: %v", err)
-		} else {
-			log.Printf("Something went wrong: %v", err)
-		}
-		return models.Conversation{}, err
+		return []models.Message{}, err
 	}
-	var conversation models.Conversation
-	convoSnapshot.DataTo(&conversation)
 
-	return conversation, nil
-}
+	var messages []models.Message
 
-func GetMessages(msgIds []string) ([]map[string]any, error) {
-	var messages []map[string]any
-	c := context.Background()
+	messagesIter := convoRef.Collection("messages").Documents(c)
 
-	for _, msgId := range msgIds {
-		msg, err := loadOneMessage(msgId, c)
-		if err != nil {
-			return nil, err
+	for {
+		doc, err := messagesIter.Next()
+		if err == iterator.Done {
+			break
 		}
-		messages = append(messages, msg)
+		if err != nil {
+			return []models.Message{}, err
+		}
+		var newMessage models.Message
+		doc.DataTo(&newMessage)
+		messages = append(messages, newMessage)
 	}
 	return messages, nil
 }
 
 func ClearConversation(convoId string) error {
 	c := context.Background()
-	convoRef := getConvoRef(convoId)
 
-	convoSnapshot, err := convoRef.Get(c)
+	err := ClearMessages(c, convoId)
 	if err != nil {
-		log.Printf("Failed to load convo: %v", err)
 		return err
 	}
 
-	msgIdsInterface, err := convoSnapshot.DataAt("messages")
-	log.Print(reflect.TypeOf(msgIdsInterface))
-	if err != nil {
-		log.Printf("Failed to load convo: %v", err)
-		return err
-	}
-	msgIds, ok := msgIdsInterface.([]interface{})
-	if !ok {
-		log.Printf("interface not a slice of strings: %v", err)
-		return err
-	}
-
-	for _, msgId := range msgIds {
-		err = deleteOneMessage(msgId.(string), c)
-		if err != nil {
-			log.Printf("Failed to delete %v: %v", msgId, err)
-			return err
-		}
-	}
-
+	convoRef := Client.Collection("conversations").Doc(convoId)
 	_, err = convoRef.Delete(c)
 	if err != nil {
 		return err
@@ -143,37 +108,36 @@ func ClearConversation(convoId string) error {
 	}
 }
 
-// helper
-func getConvoRef(convoId string) *firestore.DocumentRef {
-	conversations := Client.Collection("conversations")
-	convoRef := conversations.Doc(convoId)
-	return convoRef
-}
+func ClearMessages(c context.Context, convoId string) error {
+	miniBatch := 32
 
-func loadOneMessage(msgId string, c context.Context) (map[string]any, error) {
-	msgRef := Client.Collection("messages").Doc(msgId)
-	msgSnapshot, err := msgRef.Get(c)
-	if err != nil {
-		return nil, err
+	messages := Client.Collection("conversations").Doc(convoId).Collection("messages")
+
+	bulkwriter := Client.BulkWriter(c)
+
+	for {
+		iter := messages.Limit(miniBatch).Documents(c)
+		numDel := 0
+
+		for {
+			doc, err := iter.Next()
+			if err == iterator.Done {
+				break
+			}
+			if err != nil {
+				return err
+			}
+
+			bulkwriter.Delete(doc.Ref)
+			numDel++
+		}
+
+		if numDel == 0 {
+			bulkwriter.End()
+			break
+		}
+
+		bulkwriter.Flush()
 	}
-	var msgMap models.ConvoMessage
-
-	msgSnapshot.DataTo(&msgMap)
-	returnMsg := map[string]any{
-		"role":      msgMap.Role,
-		"content":   msgMap.Content,
-		"timestamp": msgMap.Timestamp,
-	}
-
-	return returnMsg, nil
-}
-
-func deleteOneMessage(msgId string, c context.Context) error {
-	msgRef := Client.Collection("messages").Doc(msgId)
-	_, err := msgRef.Delete(c)
-	if err != nil {
-		return err
-	} else {
-		return nil
-	}
+	return nil
 }
